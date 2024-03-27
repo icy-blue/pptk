@@ -1,0 +1,9 @@
+dist/
+.idea/
+pptk.egg-info/
+pptk/__pycache__/
+build/
+CMakeCache*
+CMakeFiles/
+*/.DS_Store
+.DS_Store
