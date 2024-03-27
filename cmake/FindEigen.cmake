@@ -1,5 +1,5 @@
 include(FindPackageHandleStandardArgs)
 
-set(Eigen_INCLUDE_DIR "Eigen_INCLUDE_DIR-NOTFOUND" CACHE PATH "Path containing Eigen folder")
+set(Eigen_INCLUDE_DIR "/usr/include/eigen3")
 
 find_package_handle_standard_args(Eigen REQUIRED_VARS Eigen_INCLUDE_DIR)

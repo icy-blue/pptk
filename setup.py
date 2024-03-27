@@ -6,40 +6,39 @@ import os.path
 import shutil
 import platform
 
-from pip._internal import wheel
+import packaging.tags
 
-wheel_tags = wheel.pep425tags.get_supported()[0]
-
-system_type = platform.system()
+sys_tag = packaging.tags.sys_tags().__next__()
+system_type = sys_tag.platform
 
 license_text = b''
 with open('LICENSE', 'rb') as fd:
     license_text = license_text + fd.read()
-with open(os.path.join('licenses', 'LICENSE.append.txt'), 'rb') as fd:
-    license_text = license_text + fd.read()
+# with open(os.path.join('licenses', 'LICENSE.append.txt'), 'rb') as fd:
+#     license_text = license_text + fd.read()
 with open(os.path.join('pptk', 'LICENSE'), 'wb') as fd:
     fd.write(license_text)
 
 def make_mod(x):
-    if system_type == 'Windows':
+    if 'win' in system_type.lower():
         return x + '.pyd'
-    elif system_type == 'Linux':
+    elif "linux" in system_type.lower():
         return x + '.so'
-    elif system_type == 'Darwin':
+    elif 'macos' in system_type.lower():
         return x + '.so'
     else:
-        raise RuntimeError('Unknown system type %s', system_type)
+        raise RuntimeError('Unknown system type %s' % system_type)
 
 
 def make_lib(x, version_suffix=''):
-    if system_type == 'Windows':
+    if 'win' in system_type.lower():
         return x + '.dll'
-    elif system_type == 'Linux':
+    elif "linux" in system_type.lower():
         return 'lib' + x + '.so' + version_suffix
-    elif system_type == 'Darwin':
+    elif 'macos' in system_type.lower():
         return 'lib' + x + '.dylib'
     else:
-        raise RuntimeError('Unknown system type %s', system_type)
+        raise RuntimeError('Unknown system type %s' % system_type)
 
 
 def make_exe(x):
@@ -85,5 +84,5 @@ setup(
         'pptk.vfuncs': [make_mod('vfuncs')],
         'pptk.viewer': [make_exe('viewer'), 'qt.conf']},
     options={'bdist_wheel': {
-        'python_tag': wheel_tags[0],
-        'plat_name': wheel_tags[2]}})
+        'python_tag': sys_tag.interpreter,
+        'plat_name': sys_tag.platform}})
